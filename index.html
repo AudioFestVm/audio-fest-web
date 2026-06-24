@@ -221,6 +221,8 @@
 
   /* ═══ RESPONSIVE ═══ */
   @media (max-width: 768px) {
+    #quienes-somos .fade-up > div:first-child { display: none; }
+    #quienes-somos .fade-up { grid-template-columns: 1fr !important; }
     .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; width: 100%; background: var(--gris-dark); padding: 1.5rem 2rem; gap: 1.2rem; }
     .nav-links.open { display: flex; }
     .nav-toggle { display: flex; }
@@ -240,6 +242,7 @@
     <li><a href="#galeria">Galería</a></li>
     <li><a href="#eventos">Eventos</a></li>
     <li><a href="#disponibilidad">Disponibilidad</a></li>
+    <li><a href="#quienes-somos">Quiénes Somos</a></li>
   </ul>
   <div class="nav-toggle" id="navToggle">
     <span></span><span></span><span></span>
@@ -502,6 +505,41 @@
   </div>
 </div>
 
+<!-- QUIÉNES SOMOS -->
+<section id="quienes-somos" style="background:var(--gris-dark);">
+  <div class="sec-header fade-up">
+    <p class="sec-eyebrow">Conocenos</p>
+    <h2 class="sec-title">Quiénes <span>Somos</span></h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;" class="fade-up">
+    <div>
+      <img src="logo.png" alt="AudioFest" style="width:100%;max-width:300px;display:block;margin:0 auto;filter:drop-shadow(0 0 30px rgba(244,124,32,0.4));">
+    </div>
+    <div>
+      <h3 style="font-family:Montserrat,sans-serif;font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:1rem;">
+        Más de <span style="color:var(--naranja)">20 años</span> haciendo sonar tus momentos
+      </h3>
+      <p style="color:#bbb;line-height:1.8;margin-bottom:1.5rem;">
+        <strong style="color:#fff;">AudioFest</strong> nació de la pasión por la música y los eventos. Con más de dos décadas de trayectoria, hemos sido parte de miles de celebraciones únicas en San Luis y la región: quinceaños, casamientos, eventos empresariales y cumpleaños de todas las décadas.
+      </p>
+      <p style="color:#bbb;line-height:1.8;margin-bottom:2rem;">
+        Nuestro compromiso es que cada evento sea <strong style="color:var(--naranja)">inolvidable</strong>: con el mejor sonido, la iluminación perfecta y la energía que solo la experiencia puede dar.
+      </p>
+      <div style="background:var(--gris-mid);border:1px solid rgba(244,124,32,0.2);border-radius:16px;padding:1.5rem;">
+        <p style="font-family:Montserrat,sans-serif;font-weight:700;color:#fff;font-size:1.05rem;margin-bottom:.75rem;">📋 Información de contacto</p>
+        <p style="color:#bbb;margin-bottom:.4rem;">👤 <strong style="color:#fff;">Sebastián Tesan</strong></p>
+        <p style="color:#bbb;margin-bottom:.4rem;">📍 Riobamba 72, Depto. C — San Luis</p>
+        <p style="color:#bbb;margin-bottom:1rem;">📱 <a href="https://wa.me/5492657295032" target="_blank" style="color:var(--naranja);text-decoration:none;">2657 295032</a></p>
+        <a href="https://wa.me/5492657295032?text=Hola%20AudioFest!%20Quiero%20consultar%20sobre%20sus%20servicios." target="_blank"
+          style="display:inline-block;padding:.75rem 1.5rem;background:#25d366;border-radius:50px;color:#fff;font-family:Montserrat,sans-serif;font-weight:700;font-size:.9rem;text-decoration:none;letter-spacing:1px;">
+          💬 Escribinos por WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <img src="logo.png" alt="AudioFest">
@@ -512,6 +550,13 @@
   </div>
   <p>&copy; 2026 <span>AudioFest</span> — Audio & Iluminación para Eventos.</p>
 </footer>
+
+<!-- BOTÓN FLOTANTE WHATSAPP -->
+<a href="https://wa.me/5492657295032?text=Hola%20AudioFest!%20Quiero%20consultar%20sobre%20sus%20servicios." target="_blank"
+  style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;width:58px;height:58px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.5);text-decoration:none;font-size:1.8rem;transition:transform .3s;"
+  onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+  💬
+</a>
 
 <script>
   // ═══ NAV TOGGLE ═══
