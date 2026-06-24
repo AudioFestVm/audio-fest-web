@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AudioFest — Audio & Iluminación para Eventos</title>
+<meta name="description" content="AudioFest — DJ, sonido profesional JBL, iluminación y animación para casamientos, cumpleaños de 15, eventos empresariales y más.">
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --naranja: #f47c20;
+    --naranja-dark: #d4650e;
+    --rojo: #c0392b;
+    --negro: #0d0d0d;
+    --gris-dark: #141414;
+    --gris-mid: #1e1e1e;
+    --gris-light: #2a2a2a;
+    --blanco: #ffffff;
+    --texto: #cccccc;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Open Sans', sans-serif; background: var(--negro); color: var(--texto); overflow-x: hidden; }
+
+  /* ═══ NAV ═══ */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    background: rgba(13,13,13,0.95); backdrop-filter: blur(10px);
+    padding: 0 2rem; display: flex; align-items: center; justify-content: space-between;
+    height: 70px; border-bottom: 1px solid rgba(244,124,32,0.2);
+  }
+  .nav-logo img { height: 50px; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--texto); text-decoration: none; font-family: 'Montserrat', sans-serif;
+    font-weight: 600; font-size: .85rem; letter-spacing: 1px; text-transform: uppercase;
+    transition: color .3s;
+  }
+  .nav-links a:hover { color: var(--naranja); }
+  .nav-links a.active { color: var(--naranja); }
+  .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .nav-toggle span { width: 25px; height: 2px; background: var(--blanco); transition: .3s; }
+
+  /* ═══ HERO ═══ */
+  #inicio {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; padding-top: 70px;
+  }
+  #inicio::before {
+    content: ''; position: absolute; inset: 0;
+    background: url('hero.jpg') center/cover no-repeat;
+    filter: brightness(0.3); z-index: 0;
+  }
+  #inicio::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(244,124,32,0.15) 0%, transparent 60%, rgba(192,57,43,0.1) 100%);
+    z-index: 1;
+  }
+  .hero-content { position: relative; z-index: 2; text-align: center; padding: 2rem; }
+  .hero-logo { width: 160px; margin-bottom: 1.5rem; filter: drop-shadow(0 0 30px rgba(244,124,32,0.5)); }
+  .hero-title {
+    font-family: 'Montserrat', sans-serif; font-weight: 900;
+    font-size: clamp(2.5rem, 6vw, 5rem); color: var(--blanco);
+    line-height: 1.1; margin-bottom: 1rem;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+  }
+  .hero-title span { color: var(--naranja); }
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.3rem); color: #ddd;
+    margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto;
+  }
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    padding: .85rem 2rem; border-radius: 50px; font-family: 'Montserrat', sans-serif;
+    font-weight: 700; font-size: .9rem; letter-spacing: 1px; text-transform: uppercase;
+    cursor: pointer; text-decoration: none; transition: all .3s; border: 2px solid transparent;
+    display: inline-block;
+  }
+  .btn-primary { background: var(--naranja); color: var(--blanco); }
+  .btn-primary:hover { background: var(--naranja-dark); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(244,124,32,0.4); }
+  .btn-outline { background: transparent; color: var(--blanco); border-color: var(--blanco); }
+  .btn-outline:hover { background: var(--blanco); color: var(--negro); transform: translateY(-2px); }
+
+  /* ═══ SECCIONES ═══ */
+  section { padding: 5rem 2rem; }
+  .sec-header { text-align: center; margin-bottom: 3.5rem; }
+  .sec-eyebrow {
+    font-family: 'Montserrat', sans-serif; font-size: .8rem; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--naranja); margin-bottom: .5rem;
+  }
+  .sec-title {
+    font-family: 'Montserrat', sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 900; color: var(--blanco); margin-bottom: 1rem;
+  }
+  .sec-title span { color: var(--naranja); }
+  .sec-rule { width: 60px; height: 3px; background: var(--naranja); margin: 0 auto; border-radius: 2px; }
+
+  /* ═══ SERVICIOS ═══ */
+  #servicios { background: var(--gris-dark); }
+  .cards-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem; max-width: 1200px; margin: 0 auto;
+  }
+  .card {
+    background: var(--gris-mid); border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(244,124,32,0.15); transition: all .3s;
+  }
+  .card:hover { transform: translateY(-6px); border-color: var(--naranja); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+  .card-img { width: 100%; height: 200px; overflow: hidden; }
+  .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+  .card:hover .card-img img { transform: scale(1.05); }
+  .card-body { padding: 1.5rem; }
+  .card-body h3 { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--blanco); margin-bottom: .5rem; }
+  .card-body p { font-size: .9rem; color: #aaa; line-height: 1.6; }
+
+  /* ═══ GALERÍA ═══ */
+  #galeria { background: var(--negro); }
+  .gal-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; max-width: 1200px; margin: 0 auto;
+  }
+  .gal-item {
+    position: relative; border-radius: 12px; overflow: hidden;
+    aspect-ratio: 4/3; cursor: pointer;
+  }
+  .gal-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+  .gal-item:hover img { transform: scale(1.08); }
+  .gal-overlay {
+    position: absolute; inset: 0; background: rgba(244,124,32,0.7);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity .3s;
+  }
+  .gal-item:hover .gal-overlay { opacity: 1; }
+  .gal-overlay span { font-size: 2rem; color: var(--blanco); }
+
+  /* ═══ TIPOS DE EVENTOS ═══ */
+  #eventos { background: var(--gris-dark); }
+  .eventos-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem; max-width: 1200px; margin: 0 auto;
+  }
+  .evento-card {
+    background: var(--gris-mid); border-radius: 12px; padding: 1.5rem 1rem;
+    text-align: center; border: 1px solid rgba(244,124,32,0.1);
+    transition: all .3s; cursor: default;
+  }
+  .evento-card:hover { border-color: var(--naranja); transform: translateY(-4px); background: var(--gris-light); }
+  .evento-card.destacado { border-color: var(--naranja); background: linear-gradient(135deg, rgba(244,124,32,0.15), var(--gris-mid)); }
+  .evento-icon { font-size: 2.5rem; margin-bottom: .75rem; }
+  .evento-card h3 { font-family: 'Montserrat', sans-serif; font-size: .95rem; font-weight: 700; color: var(--blanco); }
+  .evento-badge {
+    display: inline-block; margin-top: .5rem; padding: .2rem .7rem;
+    background: var(--naranja); color: var(--blanco); border-radius: 20px; font-size: .7rem;
+    font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 1px;
+  }
+
+  /* ═══ DISPONIBILIDAD ═══ */
+  #disponibilidad { background: var(--negro); }
+  .cal-wrap { max-width: 800px; margin: 0 auto; }
+  .cal-legend { display: flex; gap: 2rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: .5rem; font-size: .9rem; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 50%; }
+  .dot-libre { background: #27ae60; }
+  .dot-ocupado { background: #e74c3c; }
+  .cal-container {
+    background: var(--gris-mid); border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(244,124,32,0.2); padding: 1.5rem;
+  }
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .cal-nav button {
+    background: var(--gris-light); border: none; color: var(--blanco);
+    width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem;
+    cursor: pointer; transition: background .2s;
+  }
+  .cal-nav button:hover { background: var(--naranja); }
+  .cal-month { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--blanco); }
+  .cal-grid-header {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    text-align: center; margin-bottom: .5rem;
+  }
+  .cal-grid-header span {
+    font-family: 'Montserrat', sans-serif; font-size: .75rem; font-weight: 700;
+    color: var(--naranja); letter-spacing: 1px; padding: .5rem 0;
+  }
+  .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-day {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    border-radius: 8px; font-size: .9rem; font-family: 'Montserrat', sans-serif;
+    font-weight: 600; cursor: default; transition: all .2s;
+  }
+  .cal-day.empty { background: transparent; }
+  .cal-day.libre { background: rgba(39,174,96,0.2); color: #2ecc71; border: 1px solid rgba(39,174,96,0.3); }
+  .cal-day.ocupado { background: rgba(231,76,60,0.2); color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); }
+  .cal-day.hoy { outline: 2px solid var(--naranja); }
+  .cal-day.pasado { opacity: 0.3; }
+  .cal-note {
+    text-align: center; margin-top: 1.5rem; font-size: .85rem; color: #888;
+  }
+  .cal-note a { color: var(--naranja); text-decoration: none; }
+
+  /* ═══ FOOTER ═══ */
+  footer {
+    background: var(--gris-dark); padding: 2rem; text-align: center;
+    border-top: 1px solid rgba(244,124,32,0.2);
+  }
+  footer img { height: 50px; margin-bottom: 1rem; opacity: .8; }
+  footer p { font-size: .85rem; color: #666; }
+  footer span { color: var(--naranja); }
+  .footer-social { display: flex; justify-content: center; gap: 1rem; margin: 1rem 0; }
+  .footer-social a {
+    width: 38px; height: 38px; border-radius: 50%; background: var(--gris-light);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--texto); text-decoration: none; font-size: 1rem; transition: all .3s;
+  }
+  .footer-social a:hover { background: var(--naranja); color: var(--blanco); }
+
+  /* ═══ FADE IN ═══ */
+  .fade-up { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* ═══ RESPONSIVE ═══ */
+  @media (max-width: 768px) {
+    .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; width: 100%; background: var(--gris-dark); padding: 1.5rem 2rem; gap: 1.2rem; }
+    .nav-links.open { display: flex; }
+    .nav-toggle { display: flex; }
+    .hero-btns { flex-direction: column; align-items: center; }
+    .cal-day { font-size: .75rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#inicio"><img src="logo.png" alt="AudioFest"></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#inicio">Inicio</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#galeria">Galería</a></li>
+    <li><a href="#eventos">Eventos</a></li>
+    <li><a href="#disponibilidad">Disponibilidad</a></li>
+  </ul>
+  <div class="nav-toggle" id="navToggle">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- INICIO / HERO -->
+<section id="inicio">
+  <div class="hero-content">
+    <img src="logo.png" alt="AudioFest" class="hero-logo">
+    <h1 class="hero-title">Tu evento merece<br><span>el mejor sonido</span></h1>
+    <p class="hero-sub">DJ profesional, sonido JBL, iluminación y animación para que cada momento sea inolvidable.</p>
+    <div class="hero-btns">
+      <a href="#disponibilidad" class="btn btn-primary">Ver Disponibilidad</a>
+      <a href="#servicios" class="btn btn-outline">Nuestros Servicios</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="sec-header fade-up">
+    <p class="sec-eyebrow">Lo que hacemos</p>
+    <h2 class="sec-title">Nuestros <span>Servicios</span></h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="cards-grid">
+    <div class="card fade-up">
+      <div class="card-img"><img src="Cajas_JBL.jpg" alt="Sistema de Sonido JBL"></div>
+      <div class="card-body">
+        <h3>🔊 Sistema de Sonido</h3>
+        <p>Sonido de alta fidelidad con sistema pasivo JBL profesional. Frente de escenario y monitores para el elenco.</p>
+      </div>
+    </div>
+    <div class="card fade-up">
+      <div class="card-img"><img src="iluminacion.jpg" alt="Iluminación"></div>
+      <div class="card-body">
+        <h3>💡 Iluminación</h3>
+        <p>Tachos LED, cabezas móviles, iluminación de pista y ambientación completa. Tu evento con el show de luces que merece.</p>
+      </div>
+    </div>
+    <div class="card fade-up">
+      <div class="card-img"><img src="dj.jpg" alt="DJ Profesional"></div>
+      <div class="card-body">
+        <h3>🎧 DJ Profesional</h3>
+        <p>DJ con más de 20 años de experiencia. Música para cada momento: apertura, brindis, pista, cierre y todo lo que pidas.</p>
+      </div>
+    </div>
+    <div class="card fade-up">
+      <div class="card-img"><img src="animacion.jpg" alt="Animación y Locutor"></div>
+      <div class="card-body">
+        <h3>🎤 Animación y Locutor</h3>
+        <p>Conducción del evento, presentaciones, sorteos y animación para que los invitados disfruten de principio a fin.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERÍA -->
+<section id="galeria">
+  <div class="sec-header fade-up">
+    <p class="sec-eyebrow">Nuestro trabajo</p>
+    <h2 class="sec-title">Galería de <span>Eventos</span></h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="gal-grid">
+    <div class="gal-item fade-up">
+      <img src="dj.jpg" alt="DJ en evento">
+      <div class="gal-overlay"><span>🎧</span></div>
+    </div>
+    <div class="gal-item fade-up">
+      <img src="iluminacion.jpg" alt="Iluminación">
+      <div class="gal-overlay"><span>💡</span></div>
+    </div>
+    <div class="gal-item fade-up">
+      <img src="Cajas_JBL.jpg" alt="Sistema de sonido">
+      <div class="gal-overlay"><span>🔊</span></div>
+    </div>
+    <div class="gal-item fade-up">
+      <img src="animacion.jpg" alt="Animación">
+      <div class="gal-overlay"><span>🎤</span></div>
+    </div>
+    <div class="gal-item fade-up">
+      <img src="hero.jpg" alt="Evento">
+      <div class="gal-overlay"><span>🎉</span></div>
+    </div>
+    <div class="gal-item fade-up">
+      <img src="dj.jpg" alt="DJ set">
+      <div class="gal-overlay"><span>🎶</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TIPOS DE EVENTOS -->
+<section id="eventos">
+  <div class="sec-header fade-up">
+    <p class="sec-eyebrow">Para cada ocasión</p>
+    <h2 class="sec-title">Tipo de <span>Eventos</span></h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="eventos-grid">
+    <div class="evento-card destacado fade-up">
+      <div class="evento-icon">👑</div>
+      <h3>Quinceaños</h3>
+      <span class="evento-badge">⭐ DESTACADO</span>
+    </div>
+    <div class="evento-card destacado fade-up">
+      <div class="evento-icon">💍</div>
+      <h3>Casamientos</h3>
+      <span class="evento-badge">⭐ DESTACADO</span>
+    </div>
+    <div class="evento-card destacado fade-up">
+      <div class="evento-icon">🏢</div>
+      <h3>Eventos Empresariales</h3>
+      <span class="evento-badge">⭐ DESTACADO</span>
+    </div>
+    <div class="evento-card fade-up">
+      <div class="evento-icon">🎂</div>
+      <h3>Cumple de 20 años</h3>
+    </div>
+    <div class="evento-card fade-up">
+      <div class="evento-icon">🎊</div>
+      <h3>Cumple de 30 años</h3>
+    </div>
+    <div class="evento-card fade-up">
+      <div class="evento-icon">🥂</div>
+      <h3>Cumple de 40 años</h3>
+    </div>
+    <div class="evento-card fade-up">
+      <div class="evento-icon">🎈</div>
+      <h3>Cumple de 50 años</h3>
+    </div>
+    <div class="evento-card fade-up">
+      <div class="evento-icon">🌟</div>
+      <h3>Cumple de 60 años</h3>
+    </div>
+    <div class="evento-card fade-up">
+      <div class="evento-icon">🏆</div>
+      <h3>Cumple de 70 años</h3>
+    </div>
+    <div class="evento-card fade-up">
+      <div class="evento-icon">💫</div>
+      <h3>Cumple de 80 años</h3>
+    </div>
+    <div class="evento-card fade-up">
+      <div class="evento-icon">✨</div>
+      <h3>Cumple de 90 años</h3>
+    </div>
+    <div class="evento-card fade-up">
+      <div class="evento-icon">🎖️</div>
+      <h3>Cumple de 100 años</h3>
+    </div>
+  </div>
+</section>
+
+<!-- DISPONIBILIDAD -->
+<section id="disponibilidad">
+  <div class="sec-header fade-up">
+    <p class="sec-eyebrow">Consultá tu fecha</p>
+    <h2 class="sec-title">Nuestra <span>Disponibilidad</span></h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="cal-wrap fade-up">
+    <div class="cal-legend">
+      <div class="legend-item"><div class="legend-dot dot-libre"></div><span>Disponible</span></div>
+      <div class="legend-dot dot-ocupado" style="width:14px;height:14px;border-radius:50%;"></div><span style="margin-left:.5rem">Ocupado</span>
+    </div>
+    <div class="cal-container">
+      <div class="cal-nav">
+        <button id="prevBtn">&#8249;</button>
+        <span class="cal-month" id="calMonth"></span>
+        <button id="nextBtn">&#8250;</button>
+      </div>
+      <div class="cal-grid-header">
+        <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+      </div>
+      <div class="cal-days" id="calDays"></div>
+      <p class="cal-note">
+        📅 Calendario sincronizado con Google Calendar.<br>
+        ¿Querés reservar una fecha? <a href="https://wa.me/5492664000000" target="_blank">Escribinos por WhatsApp</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="logo.png" alt="AudioFest">
+  <div class="footer-social">
+    <a href="#" title="Instagram">📷</a>
+    <a href="#" title="Facebook">📘</a>
+    <a href="#" title="WhatsApp">💬</a>
+  </div>
+  <p>&copy; 2026 <span>AudioFest</span> — Audio & Iluminación para Eventos.</p>
+</footer>
+
+<script>
+  // ═══ NAV TOGGLE ═══
+  document.getElementById('navToggle').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+
+  // ═══ ACTIVE NAV ON SCROLL ═══
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+    navLinks.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+    });
+  });
+
+  // ═══ FADE UP ON SCROLL ═══
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ═══ CALENDARIO ═══
+  // Días ocupados hardcodeados (se pueden actualizar manualmente o conectar a Google Calendar API)
+  // Formato: 'YYYY-MM-DD'
+  const ocupados = [
+    // Ejemplos — reemplazar con fechas reales
+    '2026-06-28', '2026-07-05', '2026-07-12', '2026-07-19',
+    '2026-07-26', '2026-08-02', '2026-08-09'
+  ];
+
+  let currentDate = new Date();
+  let viewYear = currentDate.getFullYear();
+  let viewMonth = currentDate.getMonth();
+
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+  function renderCal() {
+    const calMonth = document.getElementById('calMonth');
+    const calDays = document.getElementById('calDays');
+    calMonth.textContent = meses[viewMonth] + ' ' + viewYear;
+    calDays.innerHTML = '';
+
+    const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const today = new Date();
+
+    // Empty cells
+    for (let i = 0; i < firstDay; i++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day empty';
+      calDays.appendChild(el);
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const el = document.createElement('div');
+      const dateStr = viewYear + '-' + String(viewMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+      const thisDate = new Date(viewYear, viewMonth, d);
+      const isPast = thisDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const isToday = thisDate.toDateString() === today.toDateString();
+      const isOcupado = ocupados.includes(dateStr);
+      const isSabDom = thisDate.getDay() === 0 || thisDate.getDay() === 6;
+
+      el.textContent = d;
+
+      if (isPast) {
+        el.className = 'cal-day pasado';
+      } else if (isOcupado) {
+        el.className = 'cal-day ocupado';
+        el.title = 'Fecha ocupada';
+      } else if (isSabDom) {
+        el.className = 'cal-day libre';
+        el.title = 'Disponible';
+      } else {
+        el.className = 'cal-day';
+        el.style.color = '#666';
+      }
+
+      if (isToday) el.classList.add('hoy');
+      calDays.appendChild(el);
+    }
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    viewMonth--;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    renderCal();
+  });
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    viewMonth++;
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    renderCal();
+  });
+
+  renderCal();
+</script>
+</body>
+</html>
