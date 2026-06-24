@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AudioFest Reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d0d0d; font-family: 'Montserrat', sans-serif; overflow: hidden; }
+
+  /* Formato vertical 9:16 para reel */
+  #reel {
+    width: 400px; height: 711px;
+    margin: 0 auto; position: relative;
+    background: #0d0d0d; overflow: hidden;
+  }
+
+  canvas#bg { position: absolute; inset: 0; z-index: 0; }
+
+  /* Escenas */
+  .scene {
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.6s ease;
+    padding: 2rem;
+  }
+  .scene.active { opacity: 1; }
+
+  /* Escena 1 - Intro logo */
+  #s1 .logo { width: 180px; filter: drop-shadow(0 0 30px rgba(244,124,32,0.8)); animation: pulse 2s infinite; }
+  #s1 .tagline { color: #f47c20; font-size: .75rem; letter-spacing: 4px; text-transform: uppercase; margin-top: 1rem; text-align: center; }
+
+  /* Escena 2 - Nueva web */
+  #s2 .big { font-size: 1.4rem; font-weight: 900; color: #fff; text-align: center; line-height: 1.3; }
+  #s2 .big span { color: #f47c20; display: block; font-size: 2rem; }
+  #s2 .url { margin-top: 1.5rem; background: rgba(244,124,32,0.15); border: 1px solid #f47c20; border-radius: 50px; padding: .6rem 1.4rem; color: #f47c20; font-size: .8rem; letter-spacing: 1px; }
+  #s2 .sub { color: #aaa; font-size: .8rem; margin-top: 1rem; text-align: center; line-height: 1.6; }
+
+  /* Escena 3 - Calendario */
+  #s3 .titulo { font-size: 1.1rem; font-weight: 900; color: #fff; text-align: center; margin-bottom: 1.5rem; }
+  #s3 .titulo span { color: #f47c20; }
+  .mini-cal { background: rgba(255,255,255,0.05); border: 1px solid rgba(244,124,32,0.3); border-radius: 16px; padding: 1.2rem; width: 100%; }
+  .cal-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 5px; margin-bottom: 5px; }
+  .cal-h { text-align: center; font-size: .55rem; color: #f47c20; font-weight: 700; letter-spacing: 1px; }
+  .dia { aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:6px; font-size:.65rem; font-weight:700; }
+  .dia.libre { background: rgba(39,174,96,0.25); color: #2ecc71; }
+  .dia.ocupado { background: rgba(231,76,60,0.25); color: #e74c3c; }
+  .dia.vacio { background: transparent; }
+  .dia.hoy { outline: 2px solid #f47c20; }
+  .legend { display:flex; gap:1.5rem; justify-content:center; margin-top:1rem; }
+  .leg { display:flex; align-items:center; gap:.4rem; font-size:.65rem; color:#aaa; }
+  .dot { width:8px; height:8px; border-radius:50%; }
+  #s3 .cta { margin-top:1.2rem; font-size:.75rem; color:#fff; text-align:center; line-height:1.6; }
+  #s3 .cta span { color:#f47c20; font-weight:700; }
+
+  /* Escena 4 - Servicios */
+  #s4 .titulo { font-size:1.1rem; font-weight:900; color:#fff; text-align:center; margin-bottom:1.2rem; }
+  #s4 .titulo span { color:#f47c20; }
+  .servicios-grid { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; width:100%; }
+  .srv { background:rgba(255,255,255,0.05); border:1px solid rgba(244,124,32,0.2); border-radius:12px; padding:1rem; text-align:center; }
+  .srv .icon { font-size:1.8rem; margin-bottom:.4rem; }
+  .srv h4 { font-size:.7rem; color:#fff; font-weight:700; }
+  .srv p { font-size:.6rem; color:#888; margin-top:.2rem; line-height:1.4; }
+
+  /* Escena 5 - CTA Final */
+  #s5 { background: linear-gradient(135deg, rgba(244,124,32,0.2), rgba(13,13,13,0.9)); }
+  #s5 .logo { width:120px; margin-bottom:1rem; filter: drop-shadow(0 0 20px rgba(244,124,32,0.6)); }
+  #s5 .titulo { font-size:1.5rem; font-weight:900; color:#fff; text-align:center; line-height:1.2; margin-bottom:.5rem; }
+  #s5 .titulo span { color:#f47c20; }
+  #s5 .sub { font-size:.8rem; color:#aaa; text-align:center; margin-bottom:1.5rem; line-height:1.6; }
+  #s5 .wa { background:#25d366; border-radius:50px; padding:.8rem 1.5rem; color:#fff; font-size:.85rem; font-weight:700; letter-spacing:1px; display:flex; align-items:center; gap:.5rem; }
+  #s5 .web { margin-top:.8rem; color:#f47c20; font-size:.75rem; letter-spacing:1px; }
+  #s5 .stars { color:#f47c20; font-size:1.2rem; margin-bottom:1rem; letter-spacing:4px; }
+
+  /* Overlay naranja flash */
+  #flash { position:absolute; inset:0; z-index:10; background:#f47c20; opacity:0; pointer-events:none; transition:opacity 0.15s; }
+
+  @keyframes pulse { 0%,100%{filter:drop-shadow(0 0 20px rgba(244,124,32,0.6))} 50%{filter:drop-shadow(0 0 50px rgba(244,124,32,1))} }
+  @keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
+  .anim { animation: slideUp 0.6s ease forwards; }
+  .anim-d1 { animation-delay:.2s; opacity:0; }
+  .anim-d2 { animation-delay:.4s; opacity:0; }
+  .anim-d3 { animation-delay:.6s; opacity:0; }
+  .anim-d4 { animation-delay:.8s; opacity:0; }
+
+  /* Barra de progreso */
+  #progress { position:absolute; bottom:0; left:0; height:3px; background:#f47c20; z-index:20; width:0%; transition:width 0.1s linear; }
+
+  /* Número de escena */
+  #sceneNum { position:absolute; top:1rem; right:1rem; z-index:20; color:rgba(244,124,32,0.5); font-size:.7rem; font-weight:700; letter-spacing:2px; }
+
+  /* Botones control */
+  #controls { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); z-index:30; display:flex; gap:1rem; }
+  #controls button { background:rgba(244,124,32,0.8); border:none; color:#fff; padding:.4rem .9rem; border-radius:20px; font-family:Montserrat,sans-serif; font-weight:700; font-size:.7rem; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div id="reel">
+  <canvas id="bg"></canvas>
+  <div id="flash"></div>
+  <div id="sceneNum">1 / 5</div>
+  <div id="progress"></div>
+
+  <!-- ESCENA 1: LOGO INTRO -->
+  <div class="scene active" id="s1">
+    <img src="logo.png" class="logo anim" alt="AudioFest">
+    <p class="tagline anim anim-d1">Audio & Iluminación para Eventos</p>
+    <p style="color:#666;font-size:.65rem;margin-top:2rem;letter-spacing:2px;" class="anim anim-d2">Villa Mercedes · San Luis</p>
+  </div>
+
+  <!-- ESCENA 2: NUEVA WEB -->
+  <div class="scene" id="s2">
+    <div style="font-size:2.5rem;margin-bottom:.5rem;">🌐</div>
+    <div class="big anim">¡Tenemos<span>nueva web!</span></div>
+    <div class="url anim anim-d1">audiofestvm.github.io/audio-fest-web</div>
+    <div class="sub anim anim-d2">Diseñada para que puedas conocer todos nuestros servicios, ver nuestra galería y consultar disponibilidad fácilmente.</div>
+  </div>
+
+  <!-- ESCENA 3: CALENDARIO -->
+  <div class="scene" id="s3">
+    <div class="titulo anim">Reservá tu fecha<br><span>desde la web</span></div>
+    <div class="mini-cal anim anim-d1">
+      <div class="cal-row">
+        <div class="cal-h">D</div><div class="cal-h">L</div><div class="cal-h">M</div>
+        <div class="cal-h">M</div><div class="cal-h">J</div><div class="cal-h">V</div><div class="cal-h">S</div>
+      </div>
+      <div class="cal-row">
+        <div class="dia vacio"></div><div class="dia libre">1</div><div class="dia libre">2</div>
+        <div class="dia libre">3</div><div class="dia libre">4</div><div class="dia libre">5</div><div class="dia libre">6</div>
+      </div>
+      <div class="cal-row">
+        <div class="dia libre">7</div><div class="dia libre">8</div><div class="dia libre">9</div>
+        <div class="dia libre">10</div><div class="dia libre">11</div><div class="dia libre">12</div><div class="dia ocupado">13</div>
+      </div>
+      <div class="cal-row">
+        <div class="dia libre">14</div><div class="dia libre">15</div><div class="dia libre">16</div>
+        <div class="dia libre">17</div><div class="dia libre">18</div><div class="dia libre">19</div><div class="dia ocupado">20</div>
+      </div>
+      <div class="cal-row">
+        <div class="dia libre">21</div><div class="dia libre">22</div><div class="dia libre hoy">23</div>
+        <div class="dia libre">24</div><div class="dia libre">25</div><div class="dia libre">26</div><div class="dia ocupado">27</div>
+      </div>
+    </div>
+    <div class="legend anim anim-d2">
+      <div class="leg"><div class="dot" style="background:#2ecc71"></div>Disponible</div>
+      <div class="leg"><div class="dot" style="background:#e74c3c"></div>Ocupado</div>
+    </div>
+    <div class="cta anim anim-d3">Hacé clic en una fecha <span>verde</span> y<br>te llega directo a nuestro <span>WhatsApp</span> 💬</div>
+  </div>
+
+  <!-- ESCENA 4: SERVICIOS -->
+  <div class="scene" id="s4">
+    <div class="titulo anim">Nuestros <span>Servicios</span></div>
+    <div class="servicios-grid">
+      <div class="srv anim anim-d1">
+        <div class="icon">🔊</div>
+        <h4>Sonido JBL</h4>
+        <p>Sistema profesional de alta fidelidad</p>
+      </div>
+      <div class="srv anim anim-d2">
+        <div class="icon">💡</div>
+        <h4>Iluminación</h4>
+        <p>LED, cabezas móviles y ambientación</p>
+      </div>
+      <div class="srv anim anim-d3">
+        <div class="icon">🎧</div>
+        <h4>DJ Profesional</h4>
+        <p>+20 años de experiencia</p>
+      </div>
+      <div class="srv anim anim-d4">
+        <div class="icon">🎤</div>
+        <h4>Animación</h4>
+        <p>Locutor y conducción del evento</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESCENA 5: CTA FINAL -->
+  <div class="scene" id="s5">
+    <img src="logo.png" class="logo" alt="AudioFest">
+    <div class="stars">★★★★★</div>
+    <div class="titulo">+20 años<span>de experiencia</span></div>
+    <div class="sub">Consultá disponibilidad y reservá tu fecha directamente desde nuestra nueva web</div>
+    <div class="wa">💬 2657 295032</div>
+    <div class="web">audiofestvm.github.io/audio-fest-web</div>
+  </div>
+
+  <div id="controls">
+    <button onclick="prevScene()">◀ Anterior</button>
+    <button onclick="togglePlay()" id="playBtn">⏸ Pausar</button>
+    <button onclick="nextScene()">Siguiente ▶</button>
+  </div>
+</div>
+
+<script>
+  // ═══ NOTAS MUSICALES DE FONDO ═══
+  const canvas = document.getElementById('bg');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 400; canvas.height = 711;
+  const notas = ['♩','♪','♫','♬','🎵','🎶'];
+  let particles = [];
+  for (let i = 0; i < 20; i++) {
+    particles.push({
+      x: Math.random()*400, y: Math.random()*711,
+      nota: notas[Math.floor(Math.random()*notas.length)],
+      size: Math.random()*16+8, speedY: Math.random()*0.8+0.3,
+      speedX: (Math.random()-0.5)*0.5, opacity: Math.random()*0.3+0.1,
+      rotation: Math.random()*360, rotSpeed: (Math.random()-0.5)*1.5,
+    });
+  }
+  function animBg() {
+    ctx.clearRect(0,0,400,711);
+    particles.forEach((p,i) => {
+      ctx.save(); ctx.globalAlpha = p.opacity;
+      ctx.translate(p.x,p.y); ctx.rotate(p.rotation*Math.PI/180);
+      ctx.font = `${p.size}px Arial`;
+      ctx.fillStyle = Math.random()>0.8 ? '#f47c20' : '#ffffff';
+      ctx.fillText(p.nota,0,0); ctx.restore();
+      p.y -= p.speedY; p.x += p.speedX; p.rotation += p.rotSpeed;
+      if (p.y < -20) { p.y = 730; p.x = Math.random()*400; p.opacity = Math.random()*0.3+0.1; }
+    });
+    requestAnimationFrame(animBg);
+  }
+  animBg();
+
+  // ═══ CONTROL DE ESCENAS ═══
+  const scenes = document.querySelectorAll('.scene');
+  const durations = [3000, 4000, 5000, 4500, 4000]; // ms por escena
+  let current = 0;
+  let timer = null;
+  let playing = true;
+  let startTime = null;
+  let progressInterval = null;
+
+  function showScene(n) {
+    scenes.forEach(s => s.classList.remove('active'));
+    scenes[n].classList.add('active');
+    document.getElementById('sceneNum').textContent = (n+1) + ' / ' + scenes.length;
+    // Reset animaciones
+    scenes[n].querySelectorAll('.anim').forEach(el => {
+      el.style.animation = 'none';
+      el.offsetHeight;
+      el.style.animation = '';
+    });
+  }
+
+  function flash() {
+    const f = document.getElementById('flash');
+    f.style.opacity = '0.3';
+    setTimeout(() => f.style.opacity = '0', 150);
+  }
+
+  function startProgress(duration) {
+    clearInterval(progressInterval);
+    const bar = document.getElementById('progress');
+    bar.style.width = '0%';
+    startTime = Date.now();
+    progressInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min((elapsed / duration) * 100, 100);
+      bar.style.width = pct + '%';
+    }, 50);
+  }
+
+  function nextScene() {
+    flash();
+    current = (current + 1) % scenes.length;
+    showScene(current);
+    if (playing) scheduleNext();
+  }
+
+  function prevScene() {
+    flash();
+    current = (current - 1 + scenes.length) % scenes.length;
+    showScene(current);
+    if (playing) scheduleNext();
+  }
+
+  function scheduleNext() {
+    clearTimeout(timer);
+    const dur = durations[current];
+    startProgress(dur);
+    timer = setTimeout(nextScene, dur);
+  }
+
+  function togglePlay() {
+    playing = !playing;
+    document.getElementById('playBtn').textContent = playing ? '⏸ Pausar' : '▶ Reproducir';
+    if (playing) scheduleNext();
+    else { clearTimeout(timer); clearInterval(progressInterval); }
+  }
+
+  // Iniciar
+  showScene(0);
+  scheduleNext();
+</script>
+</body>
+</html>
