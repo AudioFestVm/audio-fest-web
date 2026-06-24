@@ -605,18 +605,15 @@
       } else if (isOcupado) {
         el.className = 'cal-day ocupado';
         el.title = 'Fecha ocupada';
-      } else if (isSabDom) {
-        el.className = 'cal-day libre';
-        el.title = 'Disponible';
       } else {
-        el.className = 'cal-day';
-        el.style.color = '#555';
+        el.className = 'cal-day libre';
+        el.title = 'Disponible — clic para consultar';
       }
 
       if (isToday) el.classList.add('hoy');
 
       // Click en días libres → abrir modal
-      if (!isPast && !isOcupado && isSabDom) {
+      if (!isPast && !isOcupado) {
         el.style.cursor = 'pointer';
         el.title = 'Clic para consultar esta fecha';
         el.addEventListener('click', () => abrirModal(dateStr));
