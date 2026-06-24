@@ -460,20 +460,42 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-  // ═══ CALENDARIO ═══
-  // Días ocupados hardcodeados (se pueden actualizar manualmente o conectar a Google Calendar API)
-  // Formato: 'YYYY-MM-DD'
-  const ocupados = [
-    // Ejemplos — reemplazar con fechas reales
-    '2026-06-28', '2026-07-05', '2026-07-12', '2026-07-19',
-    '2026-07-26', '2026-08-02', '2026-08-09'
-  ];
+  // ═══ CALENDARIO CON GOOGLE CALENDAR ═══
+  const CALENDAR_ID = 'stintegradosinf@gmail.com';
+  const API_KEY = 'REEMPLAZAR_CON_TU_API_KEY'; // ← pegá tu API key aquí
 
+  let ocupados = new Set();
   let currentDate = new Date();
   let viewYear = currentDate.getFullYear();
   let viewMonth = currentDate.getMonth();
-
   const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+  async function fetchEventos() {
+    try {
+      const now = new Date();
+      const timeMin = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const timeMax = new Date(now.getFullYear() + 1, now.getMonth(), 1).toISOString();
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events?key=${API_KEY}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.items) {
+        data.items.forEach(ev => {
+          const start = ev.start.date || ev.start.dateTime.split('T')[0];
+          const end   = ev.end.date   || ev.end.dateTime.split('T')[0];
+          // Marcar todos los días que abarca el evento
+          let d = new Date(start + 'T00:00:00');
+          const endD = new Date(end + 'T00:00:00');
+          while (d < endD) {
+            ocupados.add(d.toISOString().split('T')[0]);
+            d.setDate(d.getDate() + 1);
+          }
+        });
+      }
+    } catch(e) {
+      console.warn('No se pudieron cargar eventos de Google Calendar:', e);
+    }
+    renderCal();
+  }
 
   function renderCal() {
     const calMonth = document.getElementById('calMonth');
@@ -485,7 +507,6 @@
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
     const today = new Date();
 
-    // Empty cells
     for (let i = 0; i < firstDay; i++) {
       const el = document.createElement('div');
       el.className = 'cal-day empty';
@@ -498,7 +519,7 @@
       const thisDate = new Date(viewYear, viewMonth, d);
       const isPast = thisDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
       const isToday = thisDate.toDateString() === today.toDateString();
-      const isOcupado = ocupados.includes(dateStr);
+      const isOcupado = ocupados.has(dateStr);
       const isSabDom = thisDate.getDay() === 0 || thisDate.getDay() === 6;
 
       el.textContent = d;
@@ -513,7 +534,7 @@
         el.title = 'Disponible';
       } else {
         el.className = 'cal-day';
-        el.style.color = '#666';
+        el.style.color = '#555';
       }
 
       if (isToday) el.classList.add('hoy');
@@ -532,7 +553,7 @@
     renderCal();
   });
 
-  renderCal();
+  fetchEventos();
 </script>
 </body>
 </html>
