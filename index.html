@@ -253,6 +253,7 @@
 
 <!-- INICIO / HERO -->
 <section id="inicio">
+  <canvas id="notasCanvas" style="position:absolute;inset:0;z-index:1;pointer-events:none;"></canvas>
   <div class="hero-content">
     <img src="logo.png" alt="AudioFest" class="hero-logo">
     <h1 class="hero-title">Tu evento merece<br><span>el mejor sonido</span></h1>
@@ -797,6 +798,62 @@
   });
 
   fetchEventos();
+
+  // ═══ NOTAS MUSICALES HERO ═══
+  const canvas = document.getElementById('notasCanvas');
+  const ctx = canvas.getContext('2d');
+  const notas = ['♩','♪','♫','♬','🎵','🎶'];
+  let particles = [];
+
+  function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function createParticle() {
+    return {
+      x: Math.random() * canvas.width,
+      y: canvas.height + 20,
+      nota: notas[Math.floor(Math.random() * notas.length)],
+      size: Math.random() * 18 + 10,
+      speedY: Math.random() * 1.5 + 0.5,
+      speedX: (Math.random() - 0.5) * 0.8,
+      opacity: Math.random() * 0.5 + 0.3,
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 2,
+    };
+  }
+
+  for (let i = 0; i < 18; i++) {
+    const p = createParticle();
+    p.y = Math.random() * canvas.height;
+    particles.push(p);
+  }
+
+  function animateNotas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.font = `${p.size}px Arial`;
+      ctx.fillStyle = Math.random() > 0.7 ? '#f47c20' : '#ffffff';
+      ctx.fillText(p.nota, 0, 0);
+      ctx.restore();
+      p.y -= p.speedY;
+      p.x += p.speedX;
+      p.rotation += p.rotSpeed;
+      p.opacity -= 0.002;
+      if (p.y < -30 || p.opacity <= 0) {
+        particles[i] = createParticle();
+      }
+    });
+    requestAnimationFrame(animateNotas);
+  }
+  animateNotas();
 
   // ═══ CONTADOR ANIMADO ═══
   const counters = document.querySelectorAll('.counter-item [data-target]');
