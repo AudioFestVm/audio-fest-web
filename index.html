@@ -429,6 +429,7 @@
         <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
       </div>
       <div class="cal-days" id="calDays"></div>
+      <p id="calStatus" style="text-align:center; margin-top:1rem; font-size:.8rem; color:#888; min-height:1.2em;"></p>
       <p class="cal-note">
         📅 Calendario sincronizado con Google Calendar.<br>
         Hacé clic en una fecha <span style="color:#2ecc71">verde</span> para consultar disponibilidad.
@@ -547,28 +548,34 @@
   const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
   async function fetchEventos() {
+    const statusEl = document.getElementById("calStatus");
     try {
       const now = new Date();
       const timeMin = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const timeMax = new Date(now.getFullYear() + 1, now.getMonth(), 1).toISOString();
-      const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events?key=${API_KEY}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`;
+      const timeMax = new Date(now.getFullYear() + 1, now.getMonth() + 1, 1).toISOString();
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events?key=${API_KEY}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime&maxResults=250`;
       const res = await fetch(url);
       const data = await res.json();
-      if (data.items) {
+      if (data.error) {
+        console.warn("Error Calendar API:", data.error.message);
+        if (statusEl) statusEl.textContent = "⚠️ Error API: " + data.error.message;
+        renderCal(); return;
+      }
+      if (data.items && data.items.length > 0) {
+        if (statusEl) statusEl.textContent = "✅ " + data.items.length + " evento(s) cargado(s)";
         data.items.forEach(ev => {
-          const start = ev.start.date || ev.start.dateTime.split('T')[0];
-          const end   = ev.end.date   || ev.end.dateTime.split('T')[0];
-          // Marcar todos los días que abarca el evento
-          let d = new Date(start + 'T00:00:00');
-          const endD = new Date(end + 'T00:00:00');
-          while (d < endD) {
-            ocupados.add(d.toISOString().split('T')[0]);
-            d.setDate(d.getDate() + 1);
-          }
+          const start = ev.start.date || ev.start.dateTime.split("T")[0];
+          const end   = ev.end.date   || ev.end.dateTime.split("T")[0];
+          let d = new Date(start + "T12:00:00");
+          const endD = new Date(end + "T12:00:00");
+          while (d <= endD) { ocupados.add(d.toISOString().split("T")[0]); d.setDate(d.getDate() + 1); }
         });
+      } else {
+        if (statusEl) statusEl.textContent = "📅 Sin eventos en Google Calendar";
       }
     } catch(e) {
-      console.warn('No se pudieron cargar eventos de Google Calendar:', e);
+      console.warn("Error Google Calendar:", e);
+      if (statusEl) statusEl.textContent = "⚠️ No se pudo conectar con Google Calendar";
     }
     renderCal();
   }
