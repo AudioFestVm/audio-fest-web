@@ -431,11 +431,75 @@
       <div class="cal-days" id="calDays"></div>
       <p class="cal-note">
         📅 Calendario sincronizado con Google Calendar.<br>
-        ¿Querés reservar una fecha? <a href="https://wa.me/5492664000000" target="_blank">Escribinos por WhatsApp</a>
+        Hacé clic en una fecha <span style="color:#2ecc71">verde</span> para consultar disponibilidad.
       </p>
     </div>
   </div>
 </section>
+
+<!-- MODAL RESERVA -->
+<div id="modalReserva" style="display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); align-items:center; justify-content:center;">
+  <div style="background:#1e1e1e; border:1px solid rgba(244,124,32,0.4); border-radius:20px; padding:2rem; width:90%; max-width:480px; position:relative; max-height:90vh; overflow-y:auto;">
+    <button onclick="cerrarModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#aaa; font-size:1.5rem; cursor:pointer;">✕</button>
+    <div style="text-align:center; margin-bottom:1.5rem;">
+      <img src="logo.png" style="height:50px; margin-bottom:.5rem;">
+      <h3 style="font-family:Montserrat,sans-serif; color:#fff; font-size:1.2rem;">Consulta de Reserva</h3>
+      <p style="color:#f47c20; font-size:.9rem; font-family:Montserrat,sans-serif; font-weight:700;" id="modalFecha"></p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:1rem;">
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Tu nombre *</label>
+        <input id="rNombre" type="text" placeholder="Ej: María González" style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none;">
+      </div>
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Tu teléfono *</label>
+        <input id="rTelefono" type="tel" placeholder="Ej: 2657 123456" style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none;">
+      </div>
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Tipo de evento *</label>
+        <select id="rTipo" style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none; appearance:none;">
+          <option value="">-- Seleccioná --</option>
+          <option>Quinceaños</option>
+          <option>Casamiento</option>
+          <option>Evento Empresarial</option>
+          <option>Cumple de 20 años</option>
+          <option>Cumple de 30 años</option>
+          <option>Cumple de 40 años</option>
+          <option>Cumple de 50 años</option>
+          <option>Cumple de 60 años</option>
+          <option>Cumple de 70 años</option>
+          <option>Cumple de 80 años</option>
+          <option>Cumple de 90 años</option>
+          <option>Cumple de 100 años</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Cantidad de personas estimada</label>
+        <select id="rPersonas" style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none; appearance:none;">
+          <option value="">-- Seleccioná --</option>
+          <option>Menos de 50</option>
+          <option>50 a 100</option>
+          <option>100 a 200</option>
+          <option>Más de 200</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Lugar del evento</label>
+        <input id="rLugar" type="text" placeholder="Ej: Salón El Dorado, San Luis" style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none;">
+      </div>
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Comentarios adicionales</label>
+        <textarea id="rComentarios" rows="3" placeholder="Pedidos especiales, horario estimado..." style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none; resize:vertical;"></textarea>
+      </div>
+      <button onclick="enviarWhatsApp()" style="width:100%; padding:1rem; background:#25d366; border:none; border-radius:10px; color:#fff; font-family:Montserrat,sans-serif; font-weight:700; font-size:1rem; cursor:pointer; letter-spacing:1px; margin-top:.5rem;"
+        onmouseover="this.style.background='#1ebe5b'" onmouseout="this.style.background='#25d366'">
+        💬 Enviar por WhatsApp
+      </button>
+      <p style="text-align:center; font-size:.78rem; color:#666;">Se abrirá WhatsApp con tu consulta lista para enviar</p>
+    </div>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -550,6 +614,14 @@
       }
 
       if (isToday) el.classList.add('hoy');
+
+      // Click en días libres → abrir modal
+      if (!isPast && !isOcupado && isSabDom) {
+        el.style.cursor = 'pointer';
+        el.title = 'Clic para consultar esta fecha';
+        el.addEventListener('click', () => abrirModal(dateStr));
+      }
+
       calDays.appendChild(el);
     }
   }
@@ -566,6 +638,65 @@
   });
 
   fetchEventos();
+
+  // ═══ MODAL RESERVA ═══
+  const meses2 = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  let fechaSeleccionada = '';
+
+  function abrirModal(dateStr) {
+    fechaSeleccionada = dateStr;
+    const [y, m, d] = dateStr.split('-');
+    document.getElementById('modalFecha').textContent = '📅 Fecha seleccionada: ' + d + ' de ' + meses2[parseInt(m)-1] + ' de ' + y;
+    document.getElementById('rNombre').value = '';
+    document.getElementById('rTelefono').value = '';
+    document.getElementById('rTipo').value = '';
+    document.getElementById('rPersonas').value = '';
+    document.getElementById('rLugar').value = '';
+    document.getElementById('rComentarios').value = '';
+    const modal = document.getElementById('modalReserva');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrarModal() {
+    document.getElementById('modalReserva').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modalReserva').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModal();
+  });
+
+  function enviarWhatsApp() {
+    const nombre = document.getElementById('rNombre').value.trim();
+    const telefono = document.getElementById('rTelefono').value.trim();
+    const tipo = document.getElementById('rTipo').value;
+    if (!nombre || !telefono || !tipo) {
+      alert('Por favor completá los campos obligatorios (nombre, teléfono y tipo de evento).');
+      return;
+    }
+    const personas = document.getElementById('rPersonas').value || 'No especificado';
+    const lugar = document.getElementById('rLugar').value.trim() || 'No especificado';
+    const comentarios = document.getElementById('rComentarios').value.trim() || 'Ninguno';
+    const [y, m, d] = fechaSeleccionada.split('-');
+    const fechaTexto = d + ' de ' + meses2[parseInt(m)-1] + ' de ' + y;
+
+    const msg = `Hola AudioFest! 👋 Quiero consultar disponibilidad para:
+
+📅 *Fecha:* ${fechaTexto}
+👤 *Nombre:* ${nombre}
+📱 *Teléfono:* ${telefono}
+🎉 *Tipo de evento:* ${tipo}
+👥 *Personas estimadas:* ${personas}
+📍 *Lugar:* ${lugar}
+💬 *Comentarios:* ${comentarios}
+
+¡Quedo a la espera de su respuesta!`;
+
+    const url = 'https://wa.me/5492657295032?text=' + encodeURIComponent(msg);
+    window.open(url, '_blank');
+    cerrarModal();
+  }
 </script>
 </body>
 </html>
