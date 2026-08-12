@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disponibilidad — AudioFest</title>
+<meta name="description" content="Consultá la disponibilidad de fechas de AudioFest para tu evento, sincronizado con nuestro calendario.">
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html"><img src="logo.png" alt="AudioFest"></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="galeria.html">Galería</a></li>
+    <li><a href="videos.html">Videos</a></li>
+    <li><a href="eventos.html">Eventos</a></li>
+    <li><a href="disponibilidad.html">Disponibilidad</a></li>
+    <li><a href="testimonios.html">Testimonios</a></li>
+    <li><a href="quienes-somos.html">Quiénes Somos</a></li>
+  </ul>
+  <div class="nav-toggle" id="navToggle">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<main>
+<div class="page-title-bar fade-up">
+  <p class="breadcrumb"><a href="index.html">Inicio</a> / Disponibilidad</p>
+</div>
+<!-- DISPONIBILIDAD -->
+<section id="disponibilidad">
+  <div class="sec-header fade-up">
+    <p class="sec-eyebrow">Consultá tu fecha</p>
+    <h2 class="sec-title">Nuestra <span>Disponibilidad</span></h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="cal-wrap fade-up">
+    <div class="cal-legend">
+      <div class="legend-item"><div class="legend-dot dot-libre"></div><span>Disponible</span></div>
+      <div class="legend-dot dot-ocupado" style="width:14px;height:14px;border-radius:50%;"></div><span style="margin-left:.5rem">Ocupado</span>
+    </div>
+    <div class="cal-container">
+      <div class="cal-nav">
+        <button id="prevBtn">&#8249;</button>
+        <span class="cal-month" id="calMonth"></span>
+        <button id="nextBtn">&#8250;</button>
+      </div>
+      <div class="cal-grid-header">
+        <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+      </div>
+      <div class="cal-days" id="calDays"></div>
+      <p id="calStatus" style="text-align:center; margin-top:1rem; font-size:.8rem; color:#888; min-height:1.2em;"></p>
+      <p class="cal-note">
+        📅 Calendario sincronizado con Google Calendar.<br>
+        Hacé clic en una fecha <span style="color:#2ecc71">verde</span> para consultar disponibilidad.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL RESERVA -->
+<div id="modalReserva" style="display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); align-items:center; justify-content:center;">
+  <div style="background:#1e1e1e; border:1px solid rgba(244,124,32,0.4); border-radius:20px; padding:2rem; width:90%; max-width:480px; position:relative; max-height:90vh; overflow-y:auto;">
+    <button onclick="cerrarModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#aaa; font-size:1.5rem; cursor:pointer;">✕</button>
+    <div style="text-align:center; margin-bottom:1.5rem;">
+      <img src="logo.png" style="height:50px; margin-bottom:.5rem;">
+      <h3 style="font-family:Montserrat,sans-serif; color:#fff; font-size:1.2rem;">Consulta de Reserva</h3>
+      <p style="color:#f47c20; font-size:.9rem; font-family:Montserrat,sans-serif; font-weight:700;" id="modalFecha"></p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:1rem;">
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Tu nombre *</label>
+        <input id="rNombre" type="text" placeholder="Ej: María González" style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none;">
+      </div>
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Tu teléfono *</label>
+        <input id="rTelefono" type="tel" placeholder="Ej: 2657 123456" style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none;">
+      </div>
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Tipo de evento *</label>
+        <select id="rTipo" style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none; appearance:none;">
+          <option value="">-- Seleccioná --</option>
+          <option>Quinceaños</option>
+          <option>Casamiento</option>
+          <option>Evento Empresarial</option>
+          <option>Cumple de 20 años</option>
+          <option>Cumple de 30 años</option>
+          <option>Cumple de 40 años</option>
+          <option>Cumple de 50 años</option>
+          <option>Cumple de 60 años</option>
+          <option>Cumple de 70 años</option>
+          <option>Cumple de 80 años</option>
+          <option>Cumple de 90 años</option>
+          <option>Cumple de 100 años</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Cantidad de personas estimada</label>
+        <select id="rPersonas" style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none; appearance:none;">
+          <option value="">-- Seleccioná --</option>
+          <option>Menos de 50</option>
+          <option>50 a 100</option>
+          <option>100 a 200</option>
+          <option>Más de 200</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Lugar del evento</label>
+        <input id="rLugar" type="text" placeholder="Ej: Salón El Dorado, San Luis" style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none;">
+      </div>
+      <div>
+        <label style="font-size:.8rem; color:#aaa; font-family:Montserrat,sans-serif; letter-spacing:1px; text-transform:uppercase;">Comentarios adicionales</label>
+        <textarea id="rComentarios" rows="3" placeholder="Pedidos especiales, horario estimado..." style="width:100%; margin-top:.4rem; padding:.75rem 1rem; background:#2a2a2a; border:1px solid #333; border-radius:8px; color:#fff; font-size:.95rem; outline:none; resize:vertical;"></textarea>
+      </div>
+      <button onclick="enviarWhatsApp()" style="width:100%; padding:1rem; background:#25d366; border:none; border-radius:10px; color:#fff; font-family:Montserrat,sans-serif; font-weight:700; font-size:1rem; cursor:pointer; letter-spacing:1px; margin-top:.5rem;"
+        onmouseover="this.style.background='#1ebe5b'" onmouseout="this.style.background='#25d366'">
+        💬 Enviar por WhatsApp
+      </button>
+      <p style="text-align:center; font-size:.78rem; color:#666;">Se abrirá WhatsApp con tu consulta lista para enviar</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <img src="logo.png" alt="AudioFest">
+  <div class="footer-social">
+    <a href="https://www.instagram.com/audiofestvm/" target="_blank" title="Instagram" style="background:radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+    <a href="https://www.facebook.com/AudioFestVM" target="_blank" title="Facebook" style="background:#1877f2;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg></a>
+    <a href="https://wa.me/5492657295032" target="_blank" title="WhatsApp" style="background:#25d366;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+  </div>
+  <p>&copy; 2026 <span>AudioFest</span> — Audio & Iluminación para Eventos.</p>
+</footer>
+
+<!-- BOTÓN FLOTANTE WHATSAPP -->
+<a href="https://wa.me/5492657295032?text=Hola%20AudioFest!%20Quiero%20consultar%20sobre%20sus%20servicios." target="_blank"
+  style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;width:58px;height:58px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.5);text-decoration:none;font-size:1.8rem;transition:transform .3s;"
+  onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+  💬
+</a>
+
+<script src="common.js"></script>
+<script>
+  // ═══ CALENDARIO CON GOOGLE CALENDAR ═══
+  const CALENDAR_ID = 'stintegradosinf@gmail.com';
+  const API_KEY = 'AIzaSyDob3FwirttZkURlM8GuPnTf79_zCL-EY8';
+
+  let ocupados = new Set();
+  let currentDate = new Date();
+  let viewYear = currentDate.getFullYear();
+  let viewMonth = currentDate.getMonth();
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+  async function fetchEventos() {
+    const statusEl = document.getElementById("calStatus");
+    try {
+      const now = new Date();
+      const timeMin = new Date(now.getFullYear(), now.getMonth() - 6, 1).toISOString();
+      const timeMax = new Date(now.getFullYear() + 1, now.getMonth() + 1, 1).toISOString();
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events?key=${API_KEY}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime&maxResults=250`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.error) {
+        console.warn("Error Calendar API:", data.error.message);
+        if (statusEl) statusEl.textContent = "⚠️ Error API: " + data.error.message;
+        renderCal(); return;
+      }
+      if (data.items && data.items.length > 0) {
+        if (statusEl) statusEl.textContent = "✅ " + data.items.length + " evento(s) cargado(s)";
+        data.items.forEach(ev => {
+          // Usar substring para evitar problemas de timezone con Argentina -03:00
+          const start = ev.start.date || ev.start.dateTime.substring(0, 10);
+          const end   = ev.end.date   || ev.end.dateTime.substring(0, 10);
+          const [sy, sm, sd] = start.split('-').map(Number);
+          const [ey, em, ed] = end.split('-').map(Number);
+          let cur = new Date(sy, sm-1, sd);
+          const fin = new Date(ey, em-1, ed);
+          while (cur <= fin) {
+            const yy = cur.getFullYear();
+            const mm = String(cur.getMonth()+1).padStart(2,'0');
+            const dd = String(cur.getDate()).padStart(2,'0');
+            ocupados.add(`${yy}-${mm}-${dd}`);
+            cur.setDate(cur.getDate() + 1);
+          }
+        });
+      } else {
+        if (statusEl) statusEl.textContent = "📅 Sin eventos en Google Calendar";
+      }
+    } catch(e) {
+      console.warn("Error Google Calendar:", e);
+      if (statusEl) statusEl.textContent = "⚠️ No se pudo conectar con Google Calendar";
+    }
+    renderCal();
+  }
+
+  function renderCal() {
+    const calMonth = document.getElementById('calMonth');
+    const calDays = document.getElementById('calDays');
+    calMonth.textContent = meses[viewMonth] + ' ' + viewYear;
+    calDays.innerHTML = '';
+
+    const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const today = new Date();
+
+    for (let i = 0; i < firstDay; i++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day empty';
+      calDays.appendChild(el);
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const el = document.createElement('div');
+      const dateStr = viewYear + '-' + String(viewMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+      const thisDate = new Date(viewYear, viewMonth, d);
+      const isPast = thisDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const isToday = thisDate.toDateString() === today.toDateString();
+      const isOcupado = ocupados.has(dateStr);
+      const isSabDom = thisDate.getDay() === 0 || thisDate.getDay() === 6;
+
+      el.textContent = d;
+
+      if (isOcupado) {
+        el.className = 'cal-day ocupado';
+        el.title = isPast ? 'Fecha ocupada (evento pasado)' : 'Fecha ocupada';
+      } else {
+        el.className = 'cal-day libre';
+        el.title = isPast ? 'Fecha pasada' : 'Disponible — clic para consultar';
+      }
+      if (isPast) el.classList.add('pasado');
+
+      if (isToday) el.classList.add('hoy');
+
+      // Click en días libres → abrir modal
+      if (!isPast && !isOcupado) {
+        el.style.cursor = 'pointer';
+        el.title = 'Clic para consultar esta fecha';
+        el.addEventListener('click', () => abrirModal(dateStr));
+      }
+
+      calDays.appendChild(el);
+    }
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    viewMonth--;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    renderCal();
+  });
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    viewMonth++;
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    renderCal();
+  });
+
+  fetchEventos();
+
+  // ═══ NOTAS MUSICALES HERO ═══
+  const canvas = document.getElementById('notasCanvas');
+  const ctx = canvas.getContext('2d');
+  const notas = ['♩','♪','♫','♬','🎵','🎶'];
+  let particles = [];
+
+  function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function createParticle() {
+    return {
+      x: Math.random() * canvas.width,
+      y: canvas.height + 20,
+      nota: notas[Math.floor(Math.random() * notas.length)],
+      size: Math.random() * 18 + 10,
+      speedY: Math.random() * 1.5 + 0.5,
+      speedX: (Math.random() - 0.5) * 0.8,
+      opacity: Math.random() * 0.5 + 0.3,
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 2,
+    };
+  }
+
+  for (let i = 0; i < 18; i++) {
+    const p = createParticle();
+    p.y = Math.random() * canvas.height;
+    particles.push(p);
+  }
+
+  function animateNotas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.font = `${p.size}px Arial`;
+      ctx.fillStyle = Math.random() > 0.7 ? '#f47c20' : '#ffffff';
+      ctx.fillText(p.nota, 0, 0);
+      ctx.restore();
+      p.y -= p.speedY;
+      p.x += p.speedX;
+      p.rotation += p.rotSpeed;
+      p.opacity -= 0.002;
+      if (p.y < -30 || p.opacity <= 0) {
+        particles[i] = createParticle();
+      }
+    });
+    requestAnimationFrame(animateNotas);
+  }
+  animateNotas();
+
+  // ═══ CONTADOR ANIMADO ═══
+  const counters = document.querySelectorAll('.counter-item [data-target]');
+  let counted = false;
+
+  function animateCounters() {
+    if (counted) return;
+    const section = document.getElementById('contador');
+    if (!section) return;
+    const rect = section.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 100) {
+      counted = true;
+      counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const suffix = target === 5 ? ' ★' : target === 20 ? '+' : '+';
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          counter.textContent = Math.floor(current) + suffix;
+        }, 16);
+      });
+    }
+  }
+
+  window.addEventListener('scroll', animateCounters);
+  animateCounters();
+
+  // ═══ MODAL RESERVA ═══
+  const meses2 = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  let fechaSeleccionada = '';
+
+  function abrirModal(dateStr) {
+    fechaSeleccionada = dateStr;
+    const [y, m, d] = dateStr.split('-');
+    document.getElementById('modalFecha').textContent = '📅 Fecha seleccionada: ' + d + ' de ' + meses2[parseInt(m)-1] + ' de ' + y;
+    document.getElementById('rNombre').value = '';
+    document.getElementById('rTelefono').value = '';
+    document.getElementById('rTipo').value = '';
+    document.getElementById('rPersonas').value = '';
+    document.getElementById('rLugar').value = '';
+    document.getElementById('rComentarios').value = '';
+    const modal = document.getElementById('modalReserva');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrarModal() {
+    document.getElementById('modalReserva').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modalReserva').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModal();
+  });
+
+  function enviarWhatsApp() {
+    const nombre = document.getElementById('rNombre').value.trim();
+    const telefono = document.getElementById('rTelefono').value.trim();
+    const tipo = document.getElementById('rTipo').value;
+    if (!nombre || !telefono || !tipo) {
+      alert('Por favor completá los campos obligatorios (nombre, teléfono y tipo de evento).');
+      return;
+    }
+    const personas = document.getElementById('rPersonas').value || 'No especificado';
+    const lugar = document.getElementById('rLugar').value.trim() || 'No especificado';
+    const comentarios = document.getElementById('rComentarios').value.trim() || 'Ninguno';
+    const [y, m, d] = fechaSeleccionada.split('-');
+    const fechaTexto = d + ' de ' + meses2[parseInt(m)-1] + ' de ' + y;
+
+    const msg = `Hola AudioFest! 👋 Quiero consultar disponibilidad para:
+
+📅 *Fecha:* ${fechaTexto}
+👤 *Nombre:* ${nombre}
+📱 *Teléfono:* ${telefono}
+🎉 *Tipo de evento:* ${tipo}
+👥 *Personas estimadas:* ${personas}
+📍 *Lugar:* ${lugar}
+💬 *Comentarios:* ${comentarios}
+
+¡Quedo a la espera de su respuesta!`;
+
+    const url = 'https://wa.me/5492657295032?text=' + encodeURIComponent(msg);
+    window.open(url, '_blank');
+    cerrarModal();
+  }
+</script>
+</body>
+</html>
